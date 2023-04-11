@@ -1,0 +1,66 @@
+#!/bin/sh
+#     _    _     ___    _    ____  _____ ____
+#    / \  | |   |_ _|  / \  / ___|| ____/ ___|
+#   / _ \ | |    | |  / _ \ \___ \|  _| \___ \
+#  / ___ \| |___ | | / ___ \ ___) | |___ ___) |
+# /_/   \_\_____|___/_/   \_\____/|_____|____/
+#
+
+# Add verbosity to commands
+alias bc="bc -ql"
+alias cp="rsync -aPWh"
+alias mkd="mkdir -pv"
+alias mv="mv -iv"
+
+# Colorize commands when possible.
+alias ls="ls -hN --color=auto --group-directories-first"
+alias grep="grep --color=auto"
+alias diff="diff --color=auto"
+alias ccat="highlight --out-format=ansi"
+
+# These common commands are just too long! Abbreviate them.
+alias \
+	ka="killall" \
+	g="git" \
+	trem="transmission-remote" \
+	YT="youtube-viewer" \
+	sdn="sudo shutdown -h now" \
+	e="$EDITOR" \
+	v="$EDITOR" \
+	p="sudo pacman" \
+	xi="sudo xbps-install" \
+	xr="sudo xbps-remove -R" \
+	xq="xbps-query" \
+	z="zathura"
+
+alias abook="abook --config $XDG_CONFIG_HOME/abook/abbokrc --datafile $XDG_DATA_HOME/abook/addressbook"
+alias config='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+
+alias history="$EDITOR ~/.cache/zsh/history"
+alias inst="sudo pacman -S"
+alias ly="launch-lilypond"
+alias mbsync="mbsync -c $XDG_CONFIG_HOME/isync/mbsyncrc"
+alias sync="unison config"
+alias update="sudo pacman -Syu"
+alias v=$EDITOR
+alias timidity="timidity -in"
+
+#alias ht="htop"
+#alias yt="youtube-viewer"
+#
+#
+alias v="vim"
+#alias p="pandoc"
+#alias m="mpv"
+#alias r="ranger"
+#alias trc="transmission-remote-cli"
+#alias t="tremc"
+#alias trs="transmission-rss"
+#alias xup="xrdb .Xresources"
+#alias pman="sudo pacman"
+#alias pip="sudo pip"
+#alias jp="joplin"
+#alias nb="newsboat"
+#alias sc="source /home/brodie/.zshrc"
+#alias sp="source /home/brodie/.zprofile"
+#
