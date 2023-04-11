@@ -1,0 +1,82 @@
+! __  __
+! \ \/ /_ __ ___  ___  ___  _   _ _ __ ___ ___  ___
+!  \  /| '__/ _ \/ __|/ _ \| | | | '__/ __/ _ \/ __|
+!  /  \| | |  __/\__ \ (_) | |_| | | | (_|  __/\__ \
+! /_/\_\_|  \___||___/\___/ \__,_|_|  \___\___||___/
+!
+
+!========!
+! Colors !
+!========!
+
+#include "/home/remy/.cache/X11/colors.xresources"
+
+! special
+*.foreground:  COLOR15
+*.background:  COLOR0
+
+! black
+*.color0:      COLOR0
+*.color8:      COLOR8
+
+! red
+*.color1:      COLOR1
+*.color9:      COLOR9
+
+! green
+*.color2:      COLOR2
+*.color10:     COLOR10
+
+! yellow
+*.color3:      COLOR3
+*.color11:     COLOR11
+
+! blue
+*.color4:      COLOR4
+*.color12:     COLOR12
+
+! magenta
+*.color5:      COLOR5
+*.color13:     COLOR13
+
+! cyan
+*.color6:      COLOR6
+*.color14:     COLOR14
+
+! white
+*.color7:      COLOR7
+*.color15:     COLOR15
+
+!======!
+! Rofi !
+!======!
+
+!#include ".config/rofi/theme"
+!rofi.color-window: #55000000,  COLOR3,  COLOR6
+!rofi.color-normal: COLOR0,  COLOR15, COLOR0,  COLOR0,  COLOR3
+!rofi.color-active: COLOR0,  COLOR15, COLOR0,  COLOR0,  COLOR3
+!rofi.color-urgent: COLOR0,  COLOR15, COLOR0,  COLOR0,  COLOR3
+
+! ------------------------------------------------
+! DWM
+! ------------------------------------------------
+
+dwm.normbordercolor: COLOR0
+dwm.normbgcolor:     COLOR0
+dwm.normfgcolor:     COLOR15
+dwm.selbordercolor:  COLOR3
+dwm.selbgcolor:      COLOR3
+dwm.selfgcolor:      COLOR15
+
+! ------------------------------------------------
+! DMENU
+! ------------------------------------------------
+
+dmenu.font :       Roboto Condensed:style=Regular:size=11.5
+dmenu.normfgcolor: COLOR15
+dmenu.normbgcolor: COLOR0
+dmenu.selfgcolor:  COLOR0
+dmenu.selbgcolor:  COLOR11
+dmenu.outfgcolor:  COLOR0
+dmenu.outbgcolor:  COLOR1
+dmenu.prompt:      COLOR1

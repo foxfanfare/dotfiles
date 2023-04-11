@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# Source XRDB Colors
+xrdb "$XDG_CONFIG_HOME/X11/xresources"
+
+# Load Key Bindings
+dunst &
+mpd &
+numlockx &
+picom --experimental-backends &
+sxhkd -m 1 &
+udiskie &
+set_wallpaper &
+
+# DWM Blocks
+xsetroot -name " " &
+dwmblocks &

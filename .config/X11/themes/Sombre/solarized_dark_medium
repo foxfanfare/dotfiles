@@ -1,0 +1,18 @@
+! Solarized Dark Medium
+
+#define COLOR0  #073642
+#define COLOR8  #586e75
+#define COLOR1  #dc322f
+#define COLOR9  #cb4b16
+#define COLOR2  #859900
+#define COLOR10 #859900
+#define COLOR3  #b58900
+#define COLOR11 #b58900
+#define COLOR4  #268bd2
+#define COLOR12 #268bd2
+#define COLOR5  #d33682
+#define COLOR13 #d33682
+#define COLOR6  #2aa198
+#define COLOR14 #2aa198
+#define COLOR7  #93a1a1
+#define COLOR15 #eee8d5
