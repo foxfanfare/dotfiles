@@ -1,7 +1,0 @@
-#!/bin/sh
-
-# Source Xprofile
-. $XDG_CONFIG_HOME/X11/xprofile
-
-# Start DWM
-exec dwm_start
