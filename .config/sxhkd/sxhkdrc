@@ -1,0 +1,66 @@
+super + Escape
+  system
+
+super + e
+  sel_emoji
+
+super + r
+  dmenu_run -p "Exécuter"
+
+super s
+  gtk-launch Sibelius.desktop
+
+super + shift + s
+  schott
+
+super + t
+  sel_theme
+
+super + p
+  passmenu -p "Mots de passe"
+
+super + f
+  $TERMINAL -t Ranger -e ranger
+
+super + m
+  launch-neomutt
+
+super + shift + m
+  $TERMINAL -t ncmpcpp -e ncmpcpp
+
+super + w
+  qutebrowser :adblock-update
+
+super + c
+  sel_city
+
+super + v
+  mullvad-connect
+
+super + n
+  $TERMINAL -t NewsBoat -e newsboat
+
+XF86MonBrightnessDown
+  set_brightness down && kill -36 $(pidof dwmblocks)
+
+XF86MonBrightnessUp
+  set_brightness up && kill -36 $(pidof dwmblocks)
+
+XF86AudioPrev
+  mpc prev
+
+XF86AudioPlay
+  mpc toggle
+
+XF86AudioNext
+  mpc next
+
+XF86AudioRaiseVolume
+  pamixer -i 5 && kill -35 $(pidof dwmblocks)
+
+XF86AudioLowerVolume
+  pamixer -d 5 && kill -35 $(pidof dwmblocks)
+
+XF86AudioMute
+  pamixer -t && kill -35 $(pidof dwmblocks)
+
