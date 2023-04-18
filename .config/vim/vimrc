@@ -1,0 +1,512 @@
+"        _
+" __   _(_)_ __ ___  _ __ ___
+" \ \ / / | '_ ` _ \| '__/ __|
+"  \ V /| | | | | | | | | (__
+"   \_/ |_|_| |_| |_|_|  \___|
+"
+
+" ------------------------------------------------------------------------------
+" XDG SUPPORT
+" ------------------------------------------------------------------------------
+
+ if empty($MYVIMRC) | let $MYVIMRC = expand('<sfile>:p') | endif
+
+ if empty($XDG_CACHE_HOME) | let $XDG_CACHE_HOME  = $HOME."/.cache" | endif
+ if empty($XDG_CONFIG_HOME) | let $XDG_CONFIG_HOME = $HOME."/.config" | endif
+ if empty($XDG_DATA_HOME) | let $XDG_DATA_HOME   = $HOME."/.local/share" | endif
+
+ set runtimepath^=$XDG_CONFIG_HOME/vim
+ set runtimepath+=$XDG_DATA_HOME/vim
+ set runtimepath+=$XDG_CONFIG_HOME/vim/after
+
+ set packpath^=$XDG_DATA_HOME/vim,$XDG_CONFIG_HOME/vim
+ set packpath+=$XDG_CONFIG_HOME/vim/after,$XDG_DATA_HOME/vim/after
+
+ let g:netrw_home = $XDG_DATA_HOME."/vim"
+ call mkdir($XDG_DATA_HOME."/vim/spell", 'p', 0700)
+ set viewdir=$XDG_DATA_HOME/vim/view | call mkdir(&viewdir, 'p', 0700)
+
+ set backupdir=$XDG_CACHE_HOME/vim/backup | call mkdir(&backupdir, 'p', 0700)
+ set directory=$XDG_CACHE_HOME/vim/swap   | call mkdir(&directory, 'p', 0700)
+ set undodir=$XDG_CACHE_HOME/vim/undo     | call mkdir(&undodir,   'p', 0700)
+
+ "if !has('nvim') " Neovim has its own special location
+ "  set viminfofile=$XDG_CACHE_HOME/vim/viminfo
+ "endif
+
+" ------------------------------------------------------------------------------
+" COLORS OPTIONS
+" ------------------------------------------------------------------------------
+
+let g:colors_name = "xresources"
+
+" ------------------------------------------------------------------------------
+" FOLDING OPTION
+" ------------------------------------------------------------------------------
+
+  " Fold based on indention levels
+  set foldmethod=indent
+
+  " Only fold up to three nested levels
+  set foldnestmax=1
+
+  " Disable folding by default
+  set foldenable
+
+" ------------------------------------------------------------------------------
+" INDENTATION OPTIONS
+" ------------------------------------------------------------------------------
+
+  " Attempt to determine the type of a file based on its name and possibly its
+  " contents. Use this to allow intelligent auto-indenting for each filetype,
+  " and for plugins that are filetype specific.
+  if has('filetype')
+    filetype indent plugin on
+  endif
+  if has('autocmd')
+    filetype plugin indent on
+  endif
+
+  " New lines inherit the indentation of previous lines
+  set autoindent
+
+  " Wraped lines inherit the indentation of previous lines
+  set breakindent
+
+  " Convert tabs to spaces
+  set expandtab
+
+  " When shifting lines, round the indentation to the nearest
+  " multiple of shiftwidth
+  set shiftround
+
+  " When shifting, indent using four spaces
+  set shiftwidth=2
+
+  " Insert “tabstop” number of spaces when the “tab” key is pressed
+  set smarttab
+
+  " Indent using two spaces
+  set tabstop=2
+
+" ------------------------------------------------------------------------------
+" AUTOCMD
+" ------------------------------------------------------------------------------
+
+  " Exit Vim if NERDTree is the only window remaining in the only tab
+  autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
+
+  " Automatically deletes all trailing whitespace
+  " and newlines at end of file on save
+	"autocmd BufWritePre * %s/\s\+$//e
+	"autocmd BufWritePre * %s/\n\+\%$//e
+	"autocmd BufWritePre *.[ch] %s/\%$/\r/e
+
+  " Run xrdb whenever Xdefaults or Xresources are updated.
+	autocmd BufRead,BufNewFile Xresources,Xdefaults,xresources,xdefaults set filetype=xdefaults
+	autocmd BufWritePost Xresources,Xdefaults,xresources,xdefaults !xrdb ~/.config/X11/xresources
+
+  " Automatically compile suckless programs
+  autocmd BufWritePost *dmenu/config.def.h !cd $XDG_CONFIG_HOME/dmenu/; rm -f config.h && sudo make clean install
+  autocmd BufWritePost *dwm/config.def.h !cd $XDG_CONFIG_HOME/dwm/; rm -f config.h && sudo make clean install && killall dwm
+  autocmd BufWritePost *blocks.def.h !cd $XDG_CONFIG_HOME/dwmblocks; rm -f blocks.h && sudo make clean install && { killall -q dwmblocks;setsid dwmblocks & }
+	autocmd BufWritePost dwm_modules !cd $XDG_CONFIG_HOME/dwmblocks/; rm -f blocks.h && sudo make clean install && { killall -q dwmblocks;setsid dwmblocks & }
+
+  " Configuration files
+	autocmd BufWritePost *gen_theme !gen_theme
+	autocmd BufWritePost *alacritty.yml.in !gen_theme alacritty
+	autocmd BufWritePost *dunstrc.in !gen_theme dunst
+	autocmd BufWritePost *polybar/config* !exec_polybar
+	autocmd BufWritePost *qutebrowser/config.py.in !gen_theme qutebrowser
+	autocmd BufWritePost *theme.rasi.in !gen_theme rofi
+	autocmd BufWritePost *zathurarc.in !gen_theme zathura
+	autocmd BufWritePost *sxhkdrc !pkill -x sxhkd ; sxhkd &
+
+" ------------------------------------------------------------------------------
+" KEY BINDINGS
+" ------------------------------------------------------------------------------
+
+  " Leader key
+  let mapleader =","
+  
+  " Compile document
+	map <leader>c :w! \| !compile "<c-r>%"<CR>
+  
+  " Open corresponding .pdf/.html or preview
+	map <leader>p :!opout <c-r>%<CR><CR>
+
+  " Goyo plugin makes text more readable
+  map <leader>g :Goyo<CR>
+
+  " Moving around through wrapped line
+  nnoremap <C-j> gj
+  nnoremap <C-k> gk
+
+  " NERDTree
+  nnoremap <leader>n :NERDTreeToggle<CR>
+  
+  " Create markmap from the whole file
+  map <leader>m :w! \| !markmap --no-open "<c-r>%"<CR><CR>
+
+  " Quit buffers with qq
+  function! CloseOnLast()
+    let cnt = 0
+    for i in range(0, bufnr("$"))
+      if buflisted(i)
+        let cnt += 1
+      endif
+    endfor
+    if cnt <= 1
+      q
+    else
+      bw
+    endif
+  endfunction
+  nnoremap qq :call CloseOnLast()<CR>
+
+  " Redraw screen to also turn off search highlighting until the next search
+  nnoremap <C-x> :nohl<CR>
+
+  " Shortcutting split navigation
+  map <C-h> <C-w>h
+  map <C-j> <C-w>j
+  map <C-k> <C-w>k
+  map <C-l> <C-w>l
+
+  " Spell check
+	map <leader>e :setlocal spell! spelllang=en_us<CR>
+	map <leader>f :setlocal spell! spelllang=fr<CR>
+  nnoremap <C-p> [s
+  nnoremap <C-n> ]s
+  nnoremap <C-c> z=
+
+  " Sudo saves the file when the file is open in readonly mode
+  command W w !sudo tee %>/dev/null
+
+  " Y to act like D and C, i.e. to yank until EOL
+  map Y y$
+
+" ------------------------------------------------------------------------------
+" MISCELLANEOUS OPTIONS
+" ------------------------------------------------------------------------------
+
+  " Automatically re-read files if unmodified inside Vim
+  set autoread
+
+  " Allow backspacing over indention, line breaks and insertion start
+  set backspace=indent,eol,start
+
+  " Using the clipboard as the default register
+  set clipboard=unnamedplus
+
+  " Display a confirmation dialog when closing an unsaved file
+  set confirm
+
+  " Delete comment characters when joining lines
+  set formatoptions+=j
+
+  " Hide files in the background instead of closing them
+  set hidden
+
+  " Increase the undo limit
+  set history=1000
+
+  " Set 'nocompatible' to ward off unexpected things that your distro might
+  " have made, as well as sanely reset options when re-sourcing .vimrc
+  set nocompatible
+
+  " Ignore file’s mode lines; use vimrc configurations instead
+  set nomodeline
+
+  " Disable swap files
+  set noswapfile
+
+  " Interpret octal as decimal when incrementing numbers
+  set nrformats-=octal
+
+  " The shell used to execute commands
+  set shell=/usr/bin/zsh
+
+  " Ignore files matching these patterns when opening files
+  " based on a glob pattern
+  set wildignore+=.pyc,.swp
+
+" ------------------------------------------------------------------------------
+" PLUGINS
+" ------------------------------------------------------------------------------
+
+  call plug#begin(system('echo -n "${XDG_CONFIG_HOME:-$HOME/.config}/vim/pluggin"'))
+
+  " Distraction-free writing in Vim
+  Plug 'junegunn/goyo.vim'
+
+  " Light and configurable statusline/tabline plugin for Vim
+  "Plug 'itchyny/lightline.vim'
+
+  " File system explorer
+  Plug 'preservim/nerdtree'
+
+  " Adds filetype-specific icons to NERDTree files and folders
+  Plug 'ryanoasis/vim-devicons'
+
+  " Easily delete, change and add such surroundings in pairs
+  Plug 'tpope/vim-surround'
+
+  " Personal wiki for vim
+  Plug 'vimwiki/vimwiki'
+
+  " Gruvbox
+  Plug 'morhetz/gruvbox' 
+
+  " Markdown Folding
+  Plug 'masukomi/vim-markdown-folding'
+  
+  " Make your Vim/Neovim as smart as VS Code
+  Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
+  " Initialize plugin system
+  call plug#end()
+
+  "let g:lightline = {
+  "  \ 'active' : {
+  "    \ 'left': [ [ 'mode', 'paste' ],
+  "    \           [ 'readonly', 'filename', 'modified' ] ],
+  "    \ 'right': [ [ 'lineinfo' ],
+  "    \            [ 'percent' ],
+  "    \            [ 'filetype' ] ]
+  "  \ },
+  "  \ 'colorscheme': '16color'
+  "\ }
+
+	"let g:lightline.inactive = {
+  "  \ 'left': [ [ 'filename' ] ],
+  "  \ 'right': [ [ 'lineinfo' ],
+  "  \            [ 'percent' ] ] }
+	"let g:lightline.tabline = {
+  "  \ 'left': [ [ 'tabs' ] ],
+  "  \ 'right': [ [ 'close' ] ] }
+  "let g:lightline = {
+  "  \ 'colorscheme': '16color',
+  "  \ }
+
+" ------------------------------------------------------------------------------
+" SEARCH OPTIONS
+" ------------------------------------------------------------------------------
+
+  " Enable search highlighting
+  set hlsearch
+
+  " Ignore case when searching
+  set ignorecase
+
+  " Incremental search that shows partial matches
+  set incsearch
+
+  " Automatically switch search to case-sensitive
+  " when search query contains an uppercase letter
+  set smartcase
+
+" ------------------------------------------------------------------------------
+" STATUS LINE
+" ------------------------------------------------------------------------------
+
+  let g:currentmode = {
+    \ 'n'  : 'Normal ',
+    \ 'no' : 'N·Operator Pending ',
+    \ 'v'  : 'Visual ',
+    \ 'V'  : 'V·Line ',
+    \ 'x22' : 'V·Block ',
+    \ 's'  : 'Select ',
+    \ 'S'  : 'S·Line ',
+    \ 'x19' : 'S·Block ',
+    \ 'i'  : 'Insert ',
+    \ 'R'  : 'Replace ',
+    \ 'Rv' : 'V·Replace ',
+    \ 'c'  : '  Cmd  ',
+    \ 'cv' : 'Vim Ex ',
+    \ 'ce' : 'Ex ',
+    \ 'r'  : 'Prompt ',
+    \ 'rm' : 'More ',
+    \ 'r?' : 'Confirm ',
+    \ '!'  : 'Shell ',
+    \ 't'  : 'Terminal '
+  \}
+
+  " Automatically change the statusline color depending on mode
+  function! ChangeStatuslineColor()
+    if (mode() =~# '\v(n|no)')
+      exe 'hi StatusLine ctermfg=0 ctermbg=7 cterm=none \| hi StatusLineNC ctermfg=7 ctermbg=1 cterm=none'
+    elseif (mode() =~# '\v(v|V)')
+      exe 'hi StatusLine ctermfg=0 ctermbg=4 cterm=none \| hi StatusLineNC ctermfg=7 ctermbg=1 cterm=none'
+    elseif (mode() ==# 'i')
+      exe 'hi StatusLine ctermfg=0 ctermbg=3 cterm=none \| hi StatusLineNC ctermfg=7 ctermbg=1 cterm=none'
+    elseif (mode() ==# 'R')
+      exe 'hi StatusLine ctermfg=0 ctermbg=6 cterm=none \| hi StatusLineNC ctermfg=7 ctermbg=1 cterm=none'
+    else
+      exe 'hi StatusLine ctermfg=0 ctermbg=7 cterm=none \| hi StatusLineNC ctermfg=7 ctermbg=1 cterm=none'
+    endif
+    return ''
+  endfunction
+
+  " Find out is the file is locked
+  function! ReadOnly()
+    if &readonly || !&modifiable
+      return '󰌾 '
+    else
+      return ''
+  endfunction
+
+  " Find out is the file has changed
+  function! Modified()
+    if &modified
+      return '+'
+    else
+      return ''
+  endfunction
+
+  " Find out current buffer's size
+  function! FileSize()
+    let bytes = getfsize(expand('%:p'))
+    if (bytes >= 1024)
+      let kbytes = bytes / 1024
+    endif
+    if (exists('kbytes') && kbytes >= 1000)
+      let mbytes = kbytes / 1000
+    endif
+    if bytes <= 0
+      return '0'
+    endif
+    if (exists('mbytes'))
+      return mbytes . 'MB '
+    elseif (exists('kbytes'))
+      return kbytes . 'KB '
+    else
+      return bytes . 'B '
+    endif
+  endfunction
+
+  " Number of buffers
+  function! NrBufs()
+    let i = bufnr('$')
+    let j = 0
+    while i >= 1
+      if buflisted(i)
+        let j+=1
+      endif
+      let i-=1
+    endwhile
+    return j
+  endfunction
+
+  " Initialization
+  set statusline=
+
+  " Statusline color
+  set statusline+=%{ChangeStatuslineColor()}
+
+  " Current mode
+  set statusline+=%*\ %{toupper(g:currentmode[mode()])}
+
+  " Path
+  set statusline+=%1*\ %{ReadOnly()}%{Modified()}%<%t\ 
+
+  " Transparent background
+  "set statusline+=%1*\ 
+  "set statusline+=\ 
+
+  " Right side
+  set statusline+=%=
+
+  " Filetype
+  " set statusline+=%Y\ 
+
+  " Filetype
+  set statusline+=%n/%{NrBufs()}\ 
+
+  " Percentage
+  "set statusline+=%2*%4p%%\ 
+  set statusline+=%4p%%\ 
+
+  " Reset color
+  set statusline+=%*
+
+  " Line and column number
+  set statusline+=%5l:%-4c
+
+  "set statusline=
+
+" ------------------------------------------------------------------------------
+" TEXT RENDERING
+" ------------------------------------------------------------------------------
+
+  " Always try to show a paragraph’s last line
+  set display+=lastline
+
+  " Use an encoding that supports unicode
+  set encoding=utf-8
+
+  " Don’t update screen during macro and script execution
+  set lazyredraw
+
+  " Avoid wrapping a line in the middle of a word
+  set linebreak
+
+  " The number of screen lines to keep above and below the cursor
+  set scrolloff=5
+
+  " The number of screen columns to keep to the left and right of the cursor
+  set sidescrolloff=5
+
+  " Line wrap (number of cols)
+  set textwidth=75
+
+  " Enable syntax highlighting
+  syntax on
+
+  " Enable line wrapping
+  set wrap
+
+" ------------------------------------------------------------------------------
+" USER INTERFACE OPTIONS
+" ------------------------------------------------------------------------------
+
+  " Enable vertical guidline
+  "set colorcolumn=75
+
+  " Enable cursor column position tracking
+  "set cursorcolumn
+  
+  " Enable cursor line position tracking
+  "set cursorline
+
+  " Always display the status bar
+  set laststatus=2
+
+  " Hide current mode bellow status line
+  set noshowmode
+
+  " Show line numbers on the sidebar
+  set relativenumber
+
+  " Always show cursor position
+  set ruler
+
+  " Maximum number of tab pages that can be opened from the command line
+  set tabpagemax=50
+
+  " Blink cursor on error instead of beeping
+  set visualbell
+
+  " Change the cursor from block (normal) to line (edit)
+  let &t_ti.="\e[2 q"
+  let &t_SI.="\e[5 q"
+  let &t_EI.="\e[2 q"
+  let &t_te.="\e[0 q"
+
+  " Set the window’s title, reflecting the file currently being edited
+  set title
+
+  " Display command line’s tab complete options as a menu
+  set wildmenu
+
+" ------------------------------------------------------------------------------
